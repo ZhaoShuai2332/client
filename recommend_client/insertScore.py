@@ -12,13 +12,14 @@ def DB_conn(host="localhost", user="root", password="root", database="food_recom
                 )
 
 def updateScore(user_id):
-    recommendation = getScore.getRecommend(user_id)
+    recommendation = getScore.getRecommend(user_id)  # Removed getScore. since it's a function
     sql = "UPDATE recommend_lists SET score = %s WHERE user_id = %s and food_id = %s"
     conn = DB_conn()
     cursor = conn.cursor()
     try:
         for item in recommendation:
-            cursor.execute(sql, (item['score'], user_id, item['food_id']))
+            # print(item)
+            cursor.execute(sql, (item[1], user_id, item[0]))  # Use tuple indices instead of dictionary keys
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -26,4 +27,3 @@ def updateScore(user_id):
     finally:
         cursor.close()
         conn.close()
-

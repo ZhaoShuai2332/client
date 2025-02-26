@@ -11,7 +11,7 @@ def DB_conn(host="localhost", user="root", password="root", database="food_recom
     )
 
 def cal_score(a, b, alpha=0.75):
-    return alpha * a + (1 - alpha) * b
+    return alpha * b + (1 - alpha) * a
 
 def getFinalSentiment(food_id):
     sql = "SELECT sentiment_score FROM comments WHERE food_id = %s"
@@ -49,6 +49,7 @@ def getRecommend(user_id):
                 (row['food_id'], cal_score(cfScore(user_id, row['food_id']), getFinalSentiment(row['food_id'])))
                 for row in res
             ]
+            # print(recommendations)
             return recommendations
     finally:
         conn.close()
