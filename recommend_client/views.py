@@ -22,9 +22,9 @@ def recommend(request):
             data = json.loads(request.body)
             user_id = data.get("user_id")
             insertScore.updateScore(user_id)
-            return JsonResponse({'statusCode': 200, 'statusContent':"Recommend Finish!"})
+            return JsonResponse({'statusCode': "200", 'statusContent':"Recommend Finish!"})
         except Exception as e:
-            return JsonResponse({'statusCode': 400, 'statusContent': str(e)})
+            return JsonResponse({'statusCode': "400", 'statusContent': str(e)})
 
 @csrf_exempt
 def sent_comment(request):
@@ -36,6 +36,6 @@ def sent_comment(request):
            food_id = data.get("food_id")
            rating = data.get("rating")
            sentiment_analysis.updateScore(user_id, food_id, rating, content)
-           return JsonResponse({"statusCode": 200, "statusContent": "Finish!"})
+           return JsonResponse({"statusCode": "200", "statusContent": "Finish!"})
        except Exception as e:
-           return JsonResponse({"statusCode": 400, "statusContent":  str(e)})
+           return JsonResponse({"statusCode": "400", "statusContent":  str(e)})
