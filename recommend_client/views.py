@@ -19,8 +19,9 @@ def recommend(request):
     if request.method == 'POST':
         try:
             user_cf.run_recommendation_system()
-            user_id = request.GET.get('user_id')
-            insertScore.updateScore()
+            data = json.loads(request.body)
+            user_id = data.get("user_id")
+            insertScore.updateScore(user_id)
             return JsonResponse({'statusCode': 200, 'statusContent':"Recommend Finish!"})
         except Exception as e:
             return JsonResponse({'statusCode': 400, 'statusContent': str(e)})
@@ -35,6 +36,6 @@ def sent_comment(request):
            food_id = data.get("food_id")
            rating = data.get("rating")
            sentiment_analysis.updateScore(user_id, food_id, rating, content)
-           return JsonResponse({"statusCode": 200, "statuseContent": "Finish!"})
+           return JsonResponse({"statusCode": 200, "statusContent": "Finish!"})
        except Exception as e:
-           return JsonResponse({"statusCode": 200, "statuseContent":  str(e)})
+           return JsonResponse({"statusCode": 400, "statusContent":  str(e)})
