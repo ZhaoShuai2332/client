@@ -20,6 +20,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('recommend_client/', views.recommend, name="recommend_client")
-    path('comment_sent',)
+    path('recommend_client/', views.recommend, name = "recommend_client"),
+    path('comment_sent/', views.sent_comment, name = "sent_comment")
 ]

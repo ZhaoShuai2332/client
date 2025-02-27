@@ -46,14 +46,17 @@ class DBOperator:
             print("Query execution failed!", e)
             return None
 
-    def execute_update(self, query, params=None):
-        """ 执行增删改语句 """
+    def execute_update(self, query, params=None, many=False):
+        """ 执行增删改语句，支持批量更新 """
         self.connect()
         if self.conn is None:
             return False
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute(query, params or ())
+                if many and params:
+                    cursor.executemany(query, params)  # 批量插入
+                else:
+                    cursor.execute(query, params or ())
                 self.conn.commit()
             return True
         except Exception as e:
@@ -127,15 +130,17 @@ class UserBasedCF:
             for food, score in rec_foods:
                 recommendations.append((user, food, score))
 
-        # 批量插入数据
+        # **使用 `executemany()` 批量插入**
         if recommendations:
-            self.db.execute_update(query, recommendations)
+            self.db.execute_update(query, recommendations, many=True)  # 这里加上 `many=True`
+
 
 def run_recommendation_system():
     userCF = UserBasedCF()
     userCF.load_data_from_db()
     userCF.calc_user_sim()
     userCF.save_recommendations_to_db()
+
 
 # if __name__ == '__main__':
 #     run_recommendation_system()
