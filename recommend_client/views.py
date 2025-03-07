@@ -55,7 +55,9 @@ def deepseek_recommend(request):
             init_res = deepseek.chat_with_ai(prompt)
             sql = deepseek.extract_sql_from_response(init_res)
             print(sql)
-            query_llm.insert_recommendations(email, sql)
+            keywords = deepseek.extract_keywords_from_prompt(init_res)
+            print(keywords)
+            query_llm.insert_recommendations(email, sql, keywords)
             return JsonResponse({'statusCode': "200", 'statusContent': "Recommend Finish!"})
         except Exception as e:
             return JsonResponse({'statusCode': "400", 'statusContent': str(e)})

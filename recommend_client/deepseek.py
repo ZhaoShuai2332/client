@@ -1,5 +1,5 @@
 from openai import OpenAI
-import re
+import re, json
 
 client = OpenAI(
     base_url='http://localhost:11434/v1/',
@@ -67,7 +67,6 @@ def extract_sql_from_response(response):
     """
     从 LLM 响应中提取 SQL 语句，仅使用 re 解析。
     """
-    # 定义匹配 JSON 格式 SQL 语句的正则表达式
     sql_pattern = r'"sql_query"\s*:\s*"((SELECT .*?;))"'
 
     match = re.search(sql_pattern, response, re.DOTALL | re.IGNORECASE)
@@ -76,11 +75,31 @@ def extract_sql_from_response(response):
         sql_query = match.group(1).strip()
         return sql_query
     else:
-        # 备用方案：如果 JSON 格式未能匹配，尝试直接匹配 SQL 语句
         sql_pattern_alt = r"SELECT .*?;"
         match_alt = re.search(sql_pattern_alt, response, re.DOTALL | re.IGNORECASE)
         
         if match_alt:
             return match_alt.group(0).strip()
         
-    return None  # 未找到 SQL 语句返回 None
+    return None  
+
+def extract_keywords_from_prompt(response):
+    """
+    使用正则表达式从 prompt 字符串中提取 'keywords' 数组
+    """
+    keywords_pattern = r'"keywords":\s*\[(.*?)\]'
+    match = re.search(keywords_pattern, response, re.DOTALL)
+
+    if not match:
+        return None  
+
+    keywords_str = match.group(1)
+
+    keywords_str = "[" + keywords_str.strip() + "]"
+    keywords_str = keywords_str.replace("...", "").replace("(50 keywords in total)", "").strip()
+
+    try:
+        keywords_list = json.loads(keywords_str)
+        return keywords_list
+    except json.JSONDecodeError:
+        return None  
