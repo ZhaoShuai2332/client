@@ -46,7 +46,7 @@ def generate_prompt(email, food_preferences, taste_preferences, diet_goals):
     }}
     ```
 
-    Ensure that the `keywords` array contains exactly 50 recommended keywords and that `sql_query` follows correct SQL syntax for direct database execution.
+    Ensure that the `keywords` array contains exactly 50 recommended keywords and that `sql_query` follows correct SQL syntax for direct database executio, Please provide the answer directly without explaining the thought process.
     """
     return prompt
 
